@@ -14,16 +14,25 @@ class BitmapBase {
   ui32 width;
   ui32 height;
 public:
-  BitmapBase(ui32 _width, ui32 _height);
-  BitmapBase(ui32 _width, ui32 _height, struct pixel24 * _data);
+  BitmapBase(const ui32 _width, const ui32 _height);
+  BitmapBase(const ui32 _width, const ui32 _height, struct pixel24 * _data);
 
-  void setSize(struct size _size);
+  void setSize(const struct size _size) {
+    width = _size.width;
+    height = _size.height;
+  }
   void setDataMatrix(struct pixel24 * _data);
+  struct pixel24 * getDataMatrix(void) { return dataMatrix; }
 
-  char * printBMPDataChunk();
+  char * printBMPDataChunk() const;
+  bool insBMPDataChunk(const ui32 _size,char * _output) const;
 
-  ui32 getWidth() { return width; }
-  ui32 getHeight() { return height; }
+  ui32 getWidth(void) const { return width; }
+  ui32 getHeight(void) const { return height; }
+  ui32 getDataSize(void) const {
+    return (PIXEL_SIZE * getWidth() * getHeight()) * 3 + 
+  		(getWidth() % 4) * getHeight();
+  } // in byte
 };
 
 #endif
