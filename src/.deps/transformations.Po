@@ -1,0 +1,6 @@
+transformations.o transformations.o: transformations.cpp \
+  transformations.h bitmap_types.h
+
+transformations.h:
+
+bitmap_types.h:

@@ -1,0 +1,5 @@
+bitmap.o bitmap.o: bitmap.cpp bitmap.h bitmap_types.h
+
+bitmap.h:
+
+bitmap_types.h:
