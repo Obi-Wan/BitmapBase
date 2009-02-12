@@ -7,6 +7,7 @@ class transformations {
 public:
   static void gradient(struct size _size, struct pixel24 * matrix);
   static void inverseGradient(struct size _size, struct pixel24 * matrix);
+  static void sinAndGradient(struct size _size, struct pixel24 * matrix);
 };
 
 #endif
