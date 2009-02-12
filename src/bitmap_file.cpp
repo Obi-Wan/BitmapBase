@@ -1,4 +1,5 @@
 #include "bitmap_file.h"
+#include "bitmap_funcs.h"
 
 #ifdef DEBUG
   #include <cstdio>
@@ -61,11 +62,16 @@ BitmapFile::printBMPFile() {
   return fileContent;
 }
 
-inline void 
-BitmapFile::putNumberEndianessAware(const ui32 _num, const ui32 _size, char * _output)
-{
-  int i = 0;
-  for (i = 0; i < _size; i++) {
-    _output[i] = ((_num >> (i*8)) & MASK);
-  }
+bool
+BitmapFile::readBMPFile(const ui32 _size,const char * fileContent) {
+  const ui32 data_offset = getNumBy4bytesEndianessAware(fileContent+10);
+  const size pictureSize = { 
+  		getNumBy4bytesEndianessAware(fileContent+18), 
+		getNumBy4bytesEndianessAware(fileContent+22)
+		};
+  const ui16 bitsPerPixel = getNumBy2bytesEndianessAware(fileContent+28);
+  if (bitsPerPixel != 24) return false;
+  setSize(pictureSize);
+  return readDataMatrix((const sc8 *) fileContent);
 }
+

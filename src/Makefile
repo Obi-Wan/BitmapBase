@@ -43,7 +43,7 @@ am__installdirs = "$(DESTDIR)$(bindir)"
 binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
 PROGRAMS = $(bin_PROGRAMS)
 am_bitmap_handle_OBJECTS = bitmap.$(OBJEXT) bitmap_file.$(OBJEXT) \
-	transformations.$(OBJEXT) main.$(OBJEXT)
+	transformations.$(OBJEXT) DiskIO.$(OBJEXT) main.$(OBJEXT)
 bitmap_handle_OBJECTS = $(am_bitmap_handle_OBJECTS)
 bitmap_handle_LDADD = $(LDADD)
 DEFAULT_INCLUDES = -I.
@@ -59,11 +59,11 @@ DIST_SOURCES = $(bitmap_handle_SOURCES)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
-ACLOCAL = ${SHELL} /home/ben/Projects/proveLibere/missing --run aclocal-1.10
-AMTAR = ${SHELL} /home/ben/Projects/proveLibere/missing --run tar
-AUTOCONF = ${SHELL} /home/ben/Projects/proveLibere/missing --run autoconf
-AUTOHEADER = ${SHELL} /home/ben/Projects/proveLibere/missing --run autoheader
-AUTOMAKE = ${SHELL} /home/ben/Projects/proveLibere/missing --run automake-1.10
+ACLOCAL = ${SHELL} /home/ben/Projects/proveLibere/bitmapBase/missing --run aclocal-1.10
+AMTAR = ${SHELL} /home/ben/Projects/proveLibere/bitmapBase/missing --run tar
+AUTOCONF = ${SHELL} /home/ben/Projects/proveLibere/bitmapBase/missing --run autoconf
+AUTOHEADER = ${SHELL} /home/ben/Projects/proveLibere/bitmapBase/missing --run autoheader
+AUTOMAKE = ${SHELL} /home/ben/Projects/proveLibere/bitmapBase/missing --run automake-1.10
 AWK = gawk
 CPPFLAGS = 
 CXX = g++
@@ -85,7 +85,7 @@ LDFLAGS =
 LIBOBJS = 
 LIBS = 
 LTLIBOBJS = 
-MAKEINFO = ${SHELL} /home/ben/Projects/proveLibere/missing --run makeinfo
+MAKEINFO = ${SHELL} /home/ben/Projects/proveLibere/bitmapBase/missing --run makeinfo
 MKDIR_P = /usr/bin/mkdir -p
 OBJEXT = o
 PACKAGE = bitmap_handle-
@@ -99,10 +99,10 @@ SET_MAKE =
 SHELL = /bin/sh
 STRIP = 
 VERSION = 1.0 
-abs_builddir = /home/ben/Projects/proveLibere/src
-abs_srcdir = /home/ben/Projects/proveLibere/src
-abs_top_builddir = /home/ben/Projects/proveLibere
-abs_top_srcdir = /home/ben/Projects/proveLibere
+abs_builddir = /home/ben/Projects/proveLibere/bitmapBase/src
+abs_srcdir = /home/ben/Projects/proveLibere/bitmapBase/src
+abs_top_builddir = /home/ben/Projects/proveLibere/bitmapBase
+abs_top_srcdir = /home/ben/Projects/proveLibere/bitmapBase
 ac_ct_CXX = g++
 am__include = include
 am__leading_dot = .
@@ -121,7 +121,7 @@ host_alias =
 htmldir = ${docdir}
 includedir = ${prefix}/include
 infodir = ${datarootdir}/info
-install_sh = $(SHELL) /home/ben/Projects/proveLibere/install-sh
+install_sh = $(SHELL) /home/ben/Projects/proveLibere/bitmapBase/install-sh
 libdir = ${exec_prefix}/lib
 libexecdir = ${exec_prefix}/libexec
 localedir = ${datarootdir}/locale
@@ -144,6 +144,7 @@ top_srcdir = ..
 bitmap_handle_SOURCES = bitmap.cpp \
 			bitmap_file.cpp \
 			transformations.cpp \
+			DiskIO.cpp \
 			main.cpp
 
 all: all-am
@@ -212,6 +213,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+include ./$(DEPDIR)/DiskIO.Po
 include ./$(DEPDIR)/bitmap.Po
 include ./$(DEPDIR)/bitmap_file.Po
 include ./$(DEPDIR)/main.Po
