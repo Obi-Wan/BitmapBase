@@ -11,15 +11,15 @@ enum DiskOperation {
 };
 
 class DiskIO {
-  sc8 * filename;
+  const sc8 * filename;
   BitmapFile * data;
   DiskOperation op;
 
-  DiskIO(const DiskOperation _op,sc8 * _filename = NULL,BitmapFile * _data = NULL);
+  DiskIO(const DiskOperation _op, const sc8 * _filename = NULL, BitmapFile * _data = NULL);
 public:
   /* Mi servirà per controlli sui file */
   static DiskIO * createFileSocket(const DiskOperation _op,
-  		sc8 * _filename = NULL,BitmapFile * _data = NULL);
+  		const sc8 * _filename = NULL,BitmapFile * _data = NULL);
   
   bool read();
   bool write();
@@ -28,7 +28,7 @@ public:
   bool hasFilename() { return filename; }
 
   BitmapFile * getData() { return data; }
-  sc8 * getFilename() { return filename; }
+  const sc8 * getFilename() { return filename; }
 
   bool fileExists() {
     if (!filename) return false;

@@ -5,7 +5,7 @@
 // Contructors
 ////////////////////////////////////////////////////
 
-DiskIO::DiskIO(const DiskOperation _op,sc8 * _filename,
+DiskIO::DiskIO(const DiskOperation _op,const sc8 * _filename,
 		BitmapFile * _data)
 		: op(_op), filename(_filename), data(_data) {}
 
@@ -14,7 +14,7 @@ DiskIO::DiskIO(const DiskOperation _op,sc8 * _filename,
 ////////////////////////////////////////////////////
 
 DiskIO * 
-DiskIO::createFileSocket(const DiskOperation _op, sc8 * _filename,
+DiskIO::createFileSocket(const DiskOperation _op, const sc8 * _filename,
 			BitmapFile * _data)
 {
   /* Here I could put my control code */
