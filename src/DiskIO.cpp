@@ -1,6 +1,8 @@
 #include "DiskIO.h"
 #include "bitmap_funcs.h"
 
+#define DEBUG
+
 /////////////////////////////////////////////////////
 // Contructors
 ////////////////////////////////////////////////////
@@ -32,6 +34,9 @@ DiskIO::read() {
         fclose(fileInput);
         return false;
       }
+#ifdef DEBUG
+      printf("Ok è un bitmap\n");
+#endif
 
       char * fileContent = new char[4];
       if ( fread(fileContent,sizeof(char),4,fileInput) < 4 ) {
@@ -42,6 +47,9 @@ DiskIO::read() {
       ui32 count = getNumBy4bytesEndianessAware(fileContent);
       delete []fileContent;
       rewind(fileInput);
+#ifdef DEBUG
+      printf("Ok ha dimensione %d in byte: \n",count);
+#endif
       
       fileContent = new char[count];
       fread(fileContent,sizeof(char),count,fileInput);
@@ -72,4 +80,5 @@ DiskIO::write() {
   return false;
 }
 
+#undef DEBUG
 

@@ -39,4 +39,29 @@ putNumTo4bytesEndianessAware(const ui32 _num, char * _output)
   _output[3] = ((_num >> 24) & MASK);
 }
 
+inline void 
+putStringEndianessAware(const char * _string, const ui32 _size, char * _output)
+{
+  int i = 0;
+  for (i = 0; i < _size; i++) {
+    _output[i] = _string[i];
+  }
+}
+
+inline void 
+putStringTo4bytesEndianessAware(const char * _string, char * _output)
+{
+  _output[0] = _string[0];
+  _output[1] = _string[1];
+  _output[2] = _string[2];
+  _output[3] = _string[3];
+}
+
+inline void 
+putStringTo2bytesEndianessAware(const char * _string, char * _output)
+{
+  _output[0] = _string[0];
+  _output[1] = _string[1];
+}
+
 #endif
