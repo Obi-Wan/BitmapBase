@@ -1,7 +1,10 @@
-bitmap_file.o: bitmap_file.cpp bitmap_file.h bitmap.h bitmap_types.h
+bitmap_file.o: bitmap_file.cpp bitmap_file.h bitmap.h bitmap_types.h \
+  bitmap_funcs.h
 
 bitmap_file.h:
 
 bitmap.h:
 
 bitmap_types.h:
+
+bitmap_funcs.h:

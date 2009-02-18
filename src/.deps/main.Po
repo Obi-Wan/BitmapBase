@@ -1,5 +1,5 @@
 main.o: main.cpp bitmap_file.h bitmap.h bitmap_types.h transformations.h \
-  /usr/lib/gcc/x86_64-pc-linux-gnu/4.3.3/include/g++-v4/cstdio \
+  DiskIO.h /usr/lib/gcc/x86_64-pc-linux-gnu/4.3.3/include/g++-v4/cstdio \
   /usr/lib/gcc/x86_64-pc-linux-gnu/4.3.3/include/g++-v4/x86_64-pc-linux-gnu/bits/c++config.h \
   /usr/lib/gcc/x86_64-pc-linux-gnu/4.3.3/include/g++-v4/x86_64-pc-linux-gnu/bits/os_defines.h \
   /usr/include/features.h /usr/include/sys/cdefs.h \
@@ -22,6 +22,8 @@ bitmap.h:
 bitmap_types.h:
 
 transformations.h:
+
+DiskIO.h:
 
 /usr/lib/gcc/x86_64-pc-linux-gnu/4.3.3/include/g++-v4/cstdio:
 

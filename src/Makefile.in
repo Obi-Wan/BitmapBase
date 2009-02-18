@@ -43,7 +43,7 @@ am__installdirs = "$(DESTDIR)$(bindir)"
 binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
 PROGRAMS = $(bin_PROGRAMS)
 am_bitmap_handle_OBJECTS = bitmap.$(OBJEXT) bitmap_file.$(OBJEXT) \
-	transformations.$(OBJEXT) main.$(OBJEXT)
+	transformations.$(OBJEXT) DiskIO.$(OBJEXT) main.$(OBJEXT)
 bitmap_handle_OBJECTS = $(am_bitmap_handle_OBJECTS)
 bitmap_handle_LDADD = $(LDADD)
 DEFAULT_INCLUDES = -I.@am__isrc@
@@ -144,6 +144,7 @@ top_srcdir = @top_srcdir@
 bitmap_handle_SOURCES = bitmap.cpp \
 			bitmap_file.cpp \
 			transformations.cpp \
+			DiskIO.cpp \
 			main.cpp
 
 all: all-am
@@ -212,6 +213,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DiskIO.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bitmap.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bitmap_file.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main.Po@am__quote@

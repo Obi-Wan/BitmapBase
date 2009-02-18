@@ -21,6 +21,7 @@ public:
     width = _size.width;
     height = _size.height;
   }
+  bool readDataMatrix(const sc8 * _data);
   void setDataMatrix(struct pixel24 * _data);
   struct pixel24 * getDataMatrix(void) { return dataMatrix; }
 
