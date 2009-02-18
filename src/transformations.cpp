@@ -52,3 +52,21 @@ transformations::sinAndGradient(struct size _size,struct pixel24 * matrix) {
   }
 }
 
+void 
+transformations::transpose(struct size _size, struct pixel24 * matrix) {
+  ui32 i = 0, j = 0;
+  uc8 temp = 0;
+  for (i = 0; i < _size.height; i++) {
+    for (j = i + 1; j < _size.width; j++) {
+      temp = (matrix + i * _size.width + j)->red;
+      (matrix + i * _size.width + j)->red = (matrix + j * _size.width + i)->red;
+      (matrix + j * _size.width + i)->red = temp;
+      temp = (matrix + i * _size.width + j)->green;
+      (matrix + i * _size.width + j)->green = (matrix + j * _size.width + i)->green;
+      (matrix + j * _size.width + i)->green = temp;
+      temp = (matrix + i * _size.width + j)->blue;
+      (matrix + i * _size.width + j)->blue = (matrix + j * _size.width + i)->blue;
+      (matrix + j * _size.width + i)->blue = temp;
+    }
+  }
+}
