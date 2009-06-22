@@ -2,6 +2,18 @@
 #define BITMAP_FUNCS_H
 
 inline ui32
+min(const ui32& first, const ui32& second)
+{
+  return (first < second) ? first : second;
+}
+
+inline ui32
+max(const ui32& first, const ui32& second)
+{
+  return (first > second) ? first : second;
+}
+
+inline ui32
 getNumBy4bytesEndianessAware(const char * _input) /* It expects 4 bytes */
 {
   return ( ((ui32)_input[0]) + ( ((ui32) _input[1]) << 8 )
