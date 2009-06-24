@@ -3,6 +3,12 @@
 
 #include "bitmap_types.h"
 
+//#define DEBUG
+
+#ifdef DEBUG
+    #include <stdio.h>
+#endif
+
 typedef struct node_channel_coordinate {
   struct coordinate coordinates;
 
@@ -36,28 +42,32 @@ createOrderedListCC() {
 inline bool
 addElementOrderedListCC(ordered_list_channel_coordinate & list,
                         const coordinate & coords, const uc8 & value) {
-  if (!list.first) {
+  if (list.first == NULL) {
     list.first = list.last = new node_channel_coordinate(coords,value,NULL,NULL);
     list.numElements++;
     return true;
-  } else if (list.last->value < value) {
+  } else if (list.last->value <= value) {
     list.last->next = new node_channel_coordinate(coords,value,NULL,list.last);
     list.last = list.last->next;
     list.numElements++;
     return true;
-  } else if (list.first->value > value) {
+  } else if (list.first->value >= value) {
     list.first->previous = new node_channel_coordinate(coords,value,list.first,NULL);
     list.first = list.first->previous;
     list.numElements++;
     return true;
   }
-  node_channel_coordinate * currentElement = list.first->next;
-  for(;currentElement->next != NULL;currentElement = currentElement->next) {
-    if (currentElement->value > value) {
-      currentElement->previous = new node_channel_coordinate(coords,value,
+  for(node_channel_coordinate * currentElement = list.first->next;
+      currentElement->next != NULL; currentElement = currentElement->next) {
+    if (currentElement->value >= value) {
+      node_channel_coordinate * previousElement = currentElement->previous;
+      node_channel_coordinate * newElement = new node_channel_coordinate(coords,value,
                                                           currentElement,
-                                                          currentElement->previous);
-      currentElement->previous->previous->next = currentElement->previous;
+                                                          previousElement);
+      currentElement->previous = newElement;
+      if (previousElement) {
+        previousElement->next = newElement;
+      }
       list.numElements++;
       return true;
     }
@@ -69,11 +79,20 @@ inline bool
 popMinElementOrderedListCC(ordered_list_channel_coordinate & list,
                            coordinate & coords, uc8 & value) {
   if (list.first != NULL) {
+#ifdef DEBUG
+    printf("primo nella lista: (%d,%d) val: %d , next: %s\n",
+           list.first->coordinates.x,list.first->coordinates.y,
+           list.first->value,list.first->next ? "si" : "no");
+#endif
     coords = list.first->coordinates;
     value = list.first->value;
     node_channel_coordinate * tempNode = list.first;
     list.first = tempNode->next;
-    list.first->previous = NULL;
+    if (list.first) {
+      list.first->previous = NULL;
+    } else {
+      list.last = list.first;
+    }
     delete tempNode;
     list.numElements--;
     return true;
@@ -99,5 +118,6 @@ isEmptyOrderedListCC(const ordered_list_channel_coordinate & list) {
 
 //--------------------------
 
+//#undef DEBUG
 
 #endif

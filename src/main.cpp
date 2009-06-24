@@ -6,7 +6,7 @@
 int main(si32 argc, char **argv) {
   const size newSize = {512 , 512};
   pixel24 * the_matrix = new pixel24[newSize.width * newSize.height + 1];
-  transformations::sinAndGradient(newSize,the_matrix);
+  //transformations::sinAndGradient(newSize,the_matrix);
   //transformations::transpose(newSize,the_matrix);
   //transformations::inverseGradient(newSize,the_matrix);
   BitmapFile theBitmap(newSize,the_matrix);
@@ -17,6 +17,12 @@ int main(si32 argc, char **argv) {
   }*/
   DiskIO * reader = DiskIO::createFileSocket(READ,(const sc8 *)"prova.bmp",&theBitmap);
   reader->read();
+
+  //transformations::transpose(newSize,the_matrix);
+  //transformations::decolorify(newSize,the_matrix,16);
+
+  transformations::saturation(newSize,the_matrix);
+  
   DiskIO * writer = DiskIO::createFileSocket(WRITE,(const sc8 *)"prova2.bmp",&theBitmap);
   writer->write();
   return 0;

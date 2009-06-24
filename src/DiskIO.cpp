@@ -1,7 +1,7 @@
 #include "DiskIO.h"
 #include "bitmap_funcs.h"
 
-#define DEBUG
+//#define DEBUG
 
 /////////////////////////////////////////////////////
 // Contructors
@@ -80,5 +80,5 @@ DiskIO::write() {
   return false;
 }
 
-#undef DEBUG
+//#undef DEBUG
 

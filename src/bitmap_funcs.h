@@ -33,6 +33,11 @@ distance(const rel_coordinate & coords) {
   return sqrt(coords.x * coords.x + coords.y * coords.y);
 }
 
+inline si32
+distanceQuad(const rel_coordinate & coords) {
+  return (coords.x * coords.x + coords.y * coords.y);
+}
+
 //-----------------------
 
 inline ui32

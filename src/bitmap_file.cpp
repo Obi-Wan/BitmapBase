@@ -86,7 +86,7 @@ BitmapFile::printBMPFile() {
   putStringEndianessAware(STATIC_PROPS_HEADER2,
 		  STATIC_PROPS_HEADER2_SIZE,
 		  fileContent+STATIC_PROPS_HEADER2_OFFSET);
-  insBMPDataChunk(getDataSize(),&fileContent[HEADER_SIZE]);
+  insBMPDataChunk(getDataSize(),fileContent + HEADER_SIZE);
 #ifdef DEBUG
   printf("\nIl file è: ");
   for (i = 0; i < fileSize; i++) {
@@ -107,6 +107,6 @@ BitmapFile::readBMPFile(const ui32 _size,const char * fileContent) {
   const ui16 bitsPerPixel = getNumBy2bytesEndianessAware(fileContent+28);
   if (bitsPerPixel != 24) return false;
   setSize(pictureSize);
-  return readDataMatrix((const sc8 *) fileContent);
+  return readDataMatrix((const sc8 *) fileContent + data_offset);
 }
 
