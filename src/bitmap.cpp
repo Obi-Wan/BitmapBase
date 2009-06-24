@@ -12,8 +12,7 @@ BitmapBase::BitmapBase(const ui32 _width, const ui32 _height)
 		: width (_width),
 		  height (_height) {}
 
-BitmapBase::BitmapBase(const ui32 _width, const ui32 _height, 
-			struct pixel24 * _data)
+BitmapBase::BitmapBase(const ui32 _width, const ui32 _height, pixel24 * _data)
 		: width (_width),
 		  height (_height),
 		  dataMatrix (_data) {}
@@ -24,7 +23,7 @@ BitmapBase::BitmapBase(const ui32 _width, const ui32 _height,
 ////////////////////////////////////////////////////
 
 inline void 
-BitmapBase::setDataMatrix (struct pixel24 * _data) {
+BitmapBase::setDataMatrix (pixel24 * _data) {
   if (dataMatrix) {
     delete dataMatrix;
   }

@@ -1,10 +1,12 @@
 #include "transformations.h"
 
+#include "bitmap_utils.h"
+#include "bitmap_funcs.h"
 #include <cmath>
 #define PI 3.14159265
 
 void 
-transformations::gradient(struct size _size,struct pixel24 * matrix) {
+transformations::gradient(size _size, pixel24 * matrix) {
   ui32 i = 0, j = 0;
   for(i = 0; i < _size.height; i++) {
     for(j = 0; j < _size.width; j++) {
@@ -16,7 +18,7 @@ transformations::gradient(struct size _size,struct pixel24 * matrix) {
 }
 
 void 
-transformations::inverseGradient(struct size _size,struct pixel24 * matrix) {
+transformations::inverseGradient(size _size, pixel24 * matrix) {
   ui32 i = 0, j = 0;
   for(i = 0; i < _size.height; i++) {
     for(j = 0; j < _size.width; j++) {
@@ -31,7 +33,7 @@ transformations::inverseGradient(struct size _size,struct pixel24 * matrix) {
 }
 
 void 
-transformations::sinAllChannels(struct size _size,struct pixel24 * matrix) {
+transformations::sinAllChannels(size _size, pixel24 * matrix) {
   ui32 i = 0, j = 0;
   for(i = 0; i < _size.height; i++) {
     for(j = 0; j < _size.width; j++) {
@@ -48,7 +50,7 @@ transformations::sinAllChannels(struct size _size,struct pixel24 * matrix) {
 
 
 void 
-transformations::sinAndGradient(struct size _size,struct pixel24 * matrix) {
+transformations::sinAndGradient(size _size,pixel24 * matrix) {
   ui32 i = 0, j = 0;
   for(i = 0; i < _size.height; i++) {
     for(j = 0; j < _size.width; j++) {
@@ -64,7 +66,7 @@ transformations::sinAndGradient(struct size _size,struct pixel24 * matrix) {
 }
 
 void
-transformations::transpose(struct size _size, struct pixel24 * matrix) {
+transformations::transpose(size _size, pixel24 * matrix) {
   ui32 i = 0, j = 0;
   uc8 temp = 0;
   for (i = 0; i < _size.height; i++) {
@@ -83,7 +85,7 @@ transformations::transpose(struct size _size, struct pixel24 * matrix) {
 }
 
 void
-transformations::decolorify(struct size _size, struct pixel24 * matrix,
+transformations::decolorify(size _size, pixel24 * matrix,
                             const ui32 num)
 {
   ui32 i = 0, j = 0;
@@ -104,21 +106,23 @@ transformations::decolorify(struct size _size, struct pixel24 * matrix,
 void
 transformations::saturation(size _size, pixel24* matrix) {
   ui32 i = 0, j = 0;
-  coordinate toBeProcessedRed[_size.height * _size.width];
-  coordinate toBeProcessedGreen[_size.height * _size.width];
-  coordinate toBeProcessedBlue[_size.height * _size.width];
-  ui32 contRed = 0, contGreen = 0, contBlue = 0;
-
+  ordered_list_channel_coordinate 
+          * listRed = createOrderedListCC(),
+          * listGreen = createOrderedListCC(), 
+          * listBlue = createOrderedListCC();
   for (i = 0; i < _size.height; i++) { /* ciclo sulla y */
     for (j = 0; j < _size.width; j++) { /* ciclo sulla x */
       if ((matrix + i * _size.width + j)->red > 192) {
-        toBeProcessedRed[contRed++] = coordinate(j,i);
+        addElementOrderedListCC(*listRed,coordinate(j,i),
+                                (matrix + i * _size.width + j)->red);
       }
       if ((matrix + i * _size.width + j)->green > 192) {
-        toBeProcessedGreen[contGreen++] = coordinate(j,i);
+        addElementOrderedListCC(*listGreen,coordinate(j,i),
+                                (matrix + i * _size.width + j)->green);
       }
       if ((matrix + i * _size.width + j)->blue > 192) {
-        toBeProcessedBlue[contBlue++] = coordinate(j,i);
+        addElementOrderedListCC(*listBlue,coordinate(j,i),
+                                (matrix + i * _size.width + j)->blue);
       }
     }
   }
@@ -126,21 +130,43 @@ transformations::saturation(size _size, pixel24* matrix) {
   /* i vettori vanno ordinati in ordine crescente, per non processare in modo
    * diverso i vari punti */
 
-  uc8 ref = 0;
-  for (i = 0; i < contRed; i++) {
-    const ui32 X = toBeProcessedRed[i].x;
-    const ui32 Y = toBeProcessedRed[i].y;
-    ref = (matrix + Y * _size.width + X)->red;
-    if (X > 0) {
+  saturatelistOfPoints(_size,matrix,listRed,COLOR_RED);
+  saturatelistOfPoints(_size,matrix,listGreen,COLOR_GREEN);
+  saturatelistOfPoints(_size,matrix,listBlue,COLOR_BLUE);
+  
+}
 
-    } else {
-      if (Y > 0) {
+inline void
+transformations::saturatelistOfPoints(const size& _size,
+                                      pixel24* matrix,
+                                      ordered_list_channel_coordinate* list,
+                                      const ui32& color) {
+  uc8 ref = 0, tempElabRef = 0;
+  coordinate coords(0,0);
+  pixel24 * tempRefToPoint = NULL;
+  rel_coordinate upperMaxCoords(0,0),lowerMaxCoords(0,0);
 
-      } else {
-        (matrix + Y * _size.width + (X + 1))->red = min(255, ref);
+  for (;isEmptyOrderedListCC(*list);) {
+
+    popMinElementOrderedListCC(*list,coords,ref);
+
+    upperMaxCoords = rel_coordinate(max(-10,-coords.x),max(-10,-coords.y));
+    lowerMaxCoords = rel_coordinate(min(10,_size.width  - coords.x),
+                                    min(10,_size.height - coords.y));
+
+    for(si32 contX = upperMaxCoords.x; contX < lowerMaxCoords.x; contX++) {
+      for(si32 contY = upperMaxCoords.y; contY < lowerMaxCoords.y; contY++) {
+
+        tempRefToPoint = getPointerRelCoords(matrix,_size,coords,
+                                             rel_coordinate(contX,contY));
+        if (tempRefToPoint->getChannel(color) < ref) {
+          tempElabRef = tempRefToPoint->getChannel(color) +
+                  ( (ref - tempRefToPoint->getChannel(color)) /
+                    ( 2 * distance( rel_coordinate(contX,contY) ) ) );
+          tempRefToPoint->getChannel(color) = absMin(255, tempElabRef);
+        }
       }
     }
-  }
-
+  } /* Fine ciclo sugli elementi della lsita */
 }
 

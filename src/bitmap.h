@@ -9,21 +9,21 @@
 // No data coherence granted.
 
 class BitmapBase {
-  struct pixel24 * dataMatrix;
+  pixel24 * dataMatrix;
 
   ui32 width;
   ui32 height;
 public:
   BitmapBase(const ui32 _width, const ui32 _height);
-  BitmapBase(const ui32 _width, const ui32 _height, struct pixel24 * _data);
+  BitmapBase(const ui32 _width, const ui32 _height, pixel24 * _data);
 
-  void setSize(const struct size _size) {
+  void setSize(const size _size) {
     width = _size.width;
     height = _size.height;
   }
   bool readDataMatrix(const sc8 * _data);
-  void setDataMatrix(struct pixel24 * _data);
-  struct pixel24 * getDataMatrix(void) { return dataMatrix; }
+  void setDataMatrix(pixel24 * _data);
+  pixel24 * getDataMatrix(void) { return dataMatrix; }
 
   char * printBMPDataChunk() const;
   bool insBMPDataChunk(const ui32 _size,char * _output) const;

@@ -5,8 +5,8 @@
 
 class BitmapFile : protected BitmapBase {
 public:
-  BitmapFile(struct size _size);
-  BitmapFile(struct size _size, struct pixel24 * _data);
+  BitmapFile(size _size);
+  BitmapFile(size _size, pixel24 * _data);
 
   char * printBMPFile(void);
   bool readBMPFile(const ui32 _size, const char *); 

@@ -1,17 +1,39 @@
 #ifndef BITMAP_FUNCS_H
 #define BITMAP_FUNCS_H
 
+#include "bitmap_types.h"
+#include <math.h>
+
 inline ui32
-min(const ui32& first, const ui32& second)
+absMin(const ui32& first, const ui32& second)
 {
   return (first < second) ? first : second;
 }
 
 inline ui32
-max(const ui32& first, const ui32& second)
+absMax(const ui32& first, const ui32& second)
 {
   return (first > second) ? first : second;
 }
+
+inline si32
+min(const si32& first, const si32& second)
+{
+  return (first < second) ? first : second;
+}
+
+inline si32
+max(const si32& first, const si32& second)
+{
+  return (first > second) ? first : second;
+}
+
+inline si32
+distance(const rel_coordinate & coords) {
+  return sqrt(coords.x * coords.x + coords.y * coords.y);
+}
+
+//-----------------------
 
 inline ui32
 getNumBy4bytesEndianessAware(const char * _input) /* It expects 4 bytes */
@@ -74,6 +96,22 @@ putStringTo2bytesEndianessAware(const char * _string, char * _output)
 {
   _output[0] = _string[0];
   _output[1] = _string[1];
+}
+
+//-----------------------------
+
+inline pixel24 *
+getPointerRelCoords(pixel24 * matrix,const size & _size,
+                    const coordinate & absCoords,
+                    const rel_coordinate & relCoords) {
+  return (matrix + (absCoords.y + relCoords.y) * _size.width +
+          (absCoords.x + relCoords.x));
+}
+
+inline pixel24 *
+getPointerAbsCoords(pixel24 * matrix, const size & _size,
+                    const coordinate & coords) {
+  return getPointerRelCoords(matrix,_size,coords,coordinate(0,0));
 }
 
 #endif

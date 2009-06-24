@@ -50,10 +50,10 @@ static const char STATIC_PROPS_HEADER2[STATIC_PROPS_HEADER2_SIZE] = {
 // Contructors
 ////////////////////////////////////////////////////
 
-BitmapFile::BitmapFile(struct size _size)
+BitmapFile::BitmapFile(size _size)
 		: BitmapBase(_size.width,_size.height) {}
 
-BitmapFile::BitmapFile(struct size _size, struct pixel24 * _data)
+BitmapFile::BitmapFile(size _size, pixel24 * _data)
 		: BitmapBase(_size.width,_size.height,_data) {}
 
 
