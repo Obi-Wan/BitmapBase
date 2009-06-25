@@ -4,13 +4,16 @@
   #include <cstdio>
 #endif
 
+#include "transformations.h"
+
 /////////////////////////////////////////////////////
 // Contructors
 ////////////////////////////////////////////////////
 
 BitmapBase::BitmapBase(const ui32 _width, const ui32 _height)
 		: width (_width),
-		  height (_height) {}
+		  height (_height),
+          dataMatrix (NULL) {}
 
 BitmapBase::BitmapBase(const ui32 _width, const ui32 _height, pixel24 * _data)
 		: width (_width),
@@ -30,16 +33,8 @@ BitmapBase::setDataMatrix (pixel24 * _data) {
   dataMatrix = _data;
 }
 
-char * 
-BitmapBase::printBMPDataChunk() const {
-  char * fileContent = new char[getDataSize()];
-  insBMPDataChunk(getDataSize(),fileContent);
-  return fileContent;
-}
-
-
 bool 
-BitmapBase::insBMPDataChunk(const ui32 _size,char * _output) const {
+BitmapBase::emitBMPMatrixDataToWrite(const ui32 _size,char * _output) const {
   if (_size != getDataSize()) {
     return false;
   }
@@ -50,17 +45,9 @@ BitmapBase::insBMPDataChunk(const ui32 _size,char * _output) const {
   ui32 i = 0, j = 0, h = 0;
   for (i = 0; i < height; i++) {
     for (j = 0; j < width; j++) {
-#ifdef DEBUG
-      printf("Pixel ( %d , %d )\n",j,i);
-      printf("Posizione %d \n",j + i * width);
-      printf("Blu: %d ",_output[h++] = (((dataMatrix + width * i + j)->blue) & MASK));
-      printf("Verde: %d ",_output[h++] = (((dataMatrix + width * i + j)->green) & MASK));
-      printf("Rosso: %d \n",_output[h++] = (((dataMatrix + width * i + j)->red) & MASK));
-#else
       _output[h++] = (((dataMatrix + width * i + j)->blue) & MASK);
       _output[h++] = (((dataMatrix + width * i + j)->green) & MASK);
       _output[h++] = (((dataMatrix + width * i + j)->red) & MASK);
-#endif
     }
 #ifdef DEBUG
     printf("Posizionamento padding\n\n");
@@ -80,7 +67,7 @@ BitmapBase::insBMPDataChunk(const ui32 _size,char * _output) const {
 }
 
 bool 
-BitmapBase::readDataMatrix(const sc8 * _data) { /* I should control size */
+BitmapBase::readDataMatrix24(const sc8 * _data) { /* I should control size */
   ui16 numPadding = (width % 4);
   ui32 i = 0, j = 0, h = 0;
   for (i = 0; i < height; i++) {
@@ -94,3 +81,23 @@ BitmapBase::readDataMatrix(const sc8 * _data) { /* I should control size */
   return true;
 }
 
+
+/////////////////////////////////////////////////////
+// Transform Functions
+////////////////////////////////////////////////////
+
+void
+BitmapBase::applyTransform() {
+  
+  size _size = {getWidth(),getHeight()};
+
+  //transformations::sinAndGradient(_size,the_matrix);
+  //transformations::transpose(_size,the_matrix);
+  //transformations::inverseGradient(_size,the_matrix);
+
+  //transformations::transpose(_size,getDataMatrix());
+  //transformations::decolorify(_size,the_matrix,16);
+
+  transformations::saturation(_size,getDataMatrix(),224);
+  //transformations::saturation(_size,getDataMatrix(),224);
+}

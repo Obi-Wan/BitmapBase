@@ -59,11 +59,14 @@ typedef struct {
   ui32 height;
 }                           size;
 
+//  size(const ui32 & wid,const ui32 & hei) : width(wid) , height(hei) {}
+//  size(const size & _size) : width(_size.width) , height(_size.height) {}
+
 typedef struct coordinate {
   ui32 x;
   ui32 y;
 
-  coordinate(ui32 _x, ui32 _y) : x(_x), y(_y) { }
+  coordinate(const ui32 & _x, const ui32 & _y) : x(_x), y(_y) { }
   coordinate(const coordinate & coords) : x(coords.x), y(coords.y) { }
 }                           coordinate;
 

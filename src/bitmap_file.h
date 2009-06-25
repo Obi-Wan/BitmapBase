@@ -5,6 +5,7 @@
 
 class BitmapFile : protected BitmapBase {
 public:
+  BitmapFile();
   BitmapFile(size _size);
   BitmapFile(size _size, pixel24 * _data);
 
@@ -14,6 +15,8 @@ public:
   ui32 getFileSize(void){
     return (HEADER_SIZE + getDataSize());
   } // in byte
+
+  void applyTransform() { BitmapBase::applyTransform(); } ;
 };
 
 #endif

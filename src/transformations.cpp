@@ -109,14 +109,17 @@ transformations::decolorify(size _size, pixel24 * matrix,
   }
 }
 
-/* 192/256 = 75     %
+/** This method saturates point near already-saturated points.
+ *
+ * It considers just the most saturated:
+ *
+ * 192/256 = 75     %
  * 208/256 = 81.25  %
  * 224/256 = 87.5   %
  * 240/256 = 93.75  %
  */
-
 void
-transformations::saturation(size _size, pixel24* matrix) {
+transformations::saturation(size _size, pixel24* matrix, uc8 threshold) {
   ui32 i = 0, j = 0;
   ordered_list_channel_coordinate 
           * listRed = createOrderedListCC(),
@@ -124,15 +127,15 @@ transformations::saturation(size _size, pixel24* matrix) {
           * listBlue = createOrderedListCC();
   for (i = 0; i < _size.height; i++) { /* ciclo sulla y */
     for (j = 0; j < _size.width; j++) { /* ciclo sulla x */
-      if ((matrix + i * _size.width + j)->red > 224) {
+      if ((matrix + i * _size.width + j)->red > threshold) {
         addElementOrderedListCC(*listRed,coordinate(j,i),
                                 (matrix + i * _size.width + j)->red);
       }
-      if ((matrix + i * _size.width + j)->green > 224) {
+      if ((matrix + i * _size.width + j)->green > threshold) {
         addElementOrderedListCC(*listGreen,coordinate(j,i),
                                 (matrix + i * _size.width + j)->green);
       }
-      if ((matrix + i * _size.width + j)->blue > 224) {
+      if ((matrix + i * _size.width + j)->blue > threshold) {
         addElementOrderedListCC(*listBlue,coordinate(j,i),
                                 (matrix + i * _size.width + j)->blue);
       }

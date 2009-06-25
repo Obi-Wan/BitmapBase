@@ -12,9 +12,8 @@ public:
   static void sinAllChannels(const size _size, pixel24 * matrix);
   static void transpose(size _size, pixel24 * matrix);
 
-  static void saturation(const size _size, pixel24 * matrix);
-  static void decolorify(const size _size, pixel24 * matrix,
-                         const ui32 num);
+  static void saturation(const size _size, pixel24 * matrix, uc8 threshold);
+  static void decolorify(const size _size, pixel24 * matrix, const ui32 num);
 
   /* Maybe in future */
 //  static void classicaAdjoint(struct size _size, struct pixel24 * matrix);

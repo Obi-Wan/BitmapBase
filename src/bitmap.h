@@ -21,12 +21,17 @@ public:
     width = _size.width;
     height = _size.height;
   }
-  bool readDataMatrix(const sc8 * _data);
+  void cleanAndRefreshMatrix() {
+    if (dataMatrix) {
+      delete[] dataMatrix;
+    }
+    dataMatrix = new pixel24[width * height];
+  }
+  bool readDataMatrix24(const sc8 * _data);
   void setDataMatrix(pixel24 * _data);
   pixel24 * getDataMatrix(void) { return dataMatrix; }
 
-  char * printBMPDataChunk() const;
-  bool insBMPDataChunk(const ui32 _size,char * _output) const;
+  bool emitBMPMatrixDataToWrite(const ui32 _size,char * _output) const;
 
   ui32 getWidth(void) const { return width; }
   ui32 getHeight(void) const { return height; }
@@ -34,6 +39,8 @@ public:
     return (PIXEL_SIZE * getWidth() * getHeight()) * 3 + 
   		(getWidth() % 4) * getHeight();
   } // in byte
+
+  void applyTransform();
 };
 
 #endif
