@@ -67,7 +67,7 @@ BitmapFile::BitmapFile(size _size, pixel24 * _data)
 ////////////////////////////////////////////////////
 
 char * 
-BitmapFile::printBMPFile() {
+BitmapFile::emitBMPFile() {
 
   // Setting the sizes
   const ui32 dataSize = getDataSize();
@@ -78,30 +78,30 @@ BitmapFile::printBMPFile() {
 
   //- Writing the Header -//
   // File Type
-  putStringTo2bytesEndianessAware(TYPE_FILE_HEADER,fileContent);
+  putStringTo2Char(TYPE_FILE_HEADER,fileContent);
   // File Size
-  putNumTo4bytesEndianessAware(fileSize,fileContent+2);
+  putUIntTo4Char(fileSize,fileContent+2);
   // Empty application specific data
-  putStringEndianessAware(APPLICATION_SPECIFIC_DATA,
+  putStringOfVarSize(APPLICATION_SPECIFIC_DATA,
 		  APPLICATION_SPECIFIC_DATA_SIZE,
 		  fileContent+APPLICATION_SPECIFIC_DATA_OFFSET);
   // Header size info
-  putNumTo4bytesEndianessAware(HEADER_SIZE,
+  putUIntTo4Char(HEADER_SIZE,
 		  fileContent+OFFSET_OF_DATA_OFFSET);
-  putNumTo4bytesEndianessAware(REMAINING_HEADER_BYTES,
+  putUIntTo4Char(REMAINING_HEADER_BYTES,
 		  fileContent+REMAINING_HEADER_BYTES_OFFSET);
   // Image size data.
-  putNumTo4bytesEndianessAware(getWidth(),fileContent+WIDTH_OF_BITMAP_OFFSET);
-  putNumTo4bytesEndianessAware(getHeight(),fileContent+HEIGHT_OF_BITMAP_OFFSET);
+  putUIntTo4Char(getWidth(),fileContent+WIDTH_OF_BITMAP_OFFSET);
+  putUIntTo4Char(getHeight(),fileContent+HEIGHT_OF_BITMAP_OFFSET);
   // Props that do not depend on us.
-  putStringEndianessAware(STATIC_PROPS_HEADER1,
+  putStringOfVarSize(STATIC_PROPS_HEADER1,
 		  STATIC_PROPS_HEADER1_SIZE,
 		  fileContent+STATIC_PROPS_HEADER1_OFFSET);
   // Data size info (padding included)
-  putNumTo4bytesEndianessAware(dataSize,
+  putUIntTo4Char(dataSize,
 		  fileContent+RAW_DATA_SPECIFICATION_OFFSET);
   // Props that do not depend on us 2.
-  putStringEndianessAware(STATIC_PROPS_HEADER2,
+  putStringOfVarSize(STATIC_PROPS_HEADER2,
 		  STATIC_PROPS_HEADER2_SIZE,
 		  fileContent+STATIC_PROPS_HEADER2_OFFSET);
 
@@ -115,19 +115,20 @@ bool
 BitmapFile::readBMPFile(const ui32 _size,const char * fileContent) {
 
   // Offset from the start of file at which data is located
-  const ui32 data_offset = getNumBy4bytesEndianessAware(fileContent+10);
+  const ui32 data_offset = getUIntBy4Char(fileContent+10);
   
   // size of the picture (and of the matrix)
   const size pictureSize = {
-  		getNumBy4bytesEndianessAware(fileContent+18), 
-		getNumBy4bytesEndianessAware(fileContent+22)
+  		getUIntBy4Char(fileContent+18),
+		getUIntBy4Char(fileContent+22)
 		};
 #ifdef DEBUG
-      printf("Dimensioni immagine: (%d,%d)\n",pictureSize.width,pictureSize.height);
+  printf("Dimensioni immagine: (%d,%d)\n",pictureSize.width,pictureSize.height);
+  printf("Pixel da processare: %d\n",pictureSize.width * pictureSize.height);
 #endif
 
   // Color Depth of the picture
-  const ui16 bitsPerPixel = getNumBy2bytesEndianessAware(fileContent+28);
+  const ui16 bitsPerPixel = getUIntBy2Char(fileContent+28);
   
   // reads file and stores data in the matrix
   switch (bitsPerPixel) {

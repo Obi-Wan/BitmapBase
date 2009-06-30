@@ -44,7 +44,7 @@ DiskIO::read() {
         delete []fileContent;
         return false;
       }
-      ui32 count = getNumBy4bytesEndianessAware(fileContent);
+      ui32 count = getUIntBy4Char(fileContent);
       delete []fileContent;
       rewind(fileInput);
 #ifdef DEBUG
@@ -69,7 +69,7 @@ DiskIO::write() {
     FILE * fileOutput = fopen((const char *) filename,"w");
     
     if (fileOutput != NULL) {
-      const char * fileContent = data->printBMPFile();
+      const char * fileContent = data->emitBMPFile();
       fwrite(fileContent,sizeof(char),data->getFileSize(),
     		fileOutput);
       fflush(fileOutput);

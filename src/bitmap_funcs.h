@@ -41,20 +41,23 @@ distanceQuad(const rel_coordinate & coords) {
 //-----------------------
 
 inline ui32
-getNumBy4bytesEndianessAware(const char * _input) /* It expects 4 bytes */
+getUIntBy4Char(const char * _input) /* It expects 4 bytes */
 {
-  return ( ((ui32)_input[0]) + ( ((ui32) _input[1]) << 8 )
-  	  + ( ((ui32) _input[2]) << 16 ) + ( ((ui32) _input[3]) << 24 ) );
+  return ( ( ((ui32) (_input[0] & MASK))       ) +
+           ( ((ui32) (_input[1] & MASK)) << 8  ) +
+           ( ((ui32) (_input[2] & MASK)) << 16 ) +
+           ( ((ui32) (_input[3] & MASK)) << 24 ) );
 }
 
 inline ui32
-getNumBy2bytesEndianessAware(const char * _input) /* It expects 4 bytes */
+getUIntBy2Char(const char * _input) /* It expects 2 bytes */
 {
-  return ( ((ui32)_input[0]) + ( ((ui32) _input[1]) << 8 ) );
+  return ( ( ((ui32) (_input[0] & MASK))      ) +
+           ( ((ui32) (_input[1] & MASK)) << 8 ) );
 }
 
 inline void 
-putNumberEndianessAware(const ui32 _num, const ui32 _size, char * _output)
+putUIntOfVarSize(const ui32 _num, const ui32 _size, char * _output)
 {
   int i = 0;
   for (i = 0; i < _size; i++) {
@@ -63,14 +66,14 @@ putNumberEndianessAware(const ui32 _num, const ui32 _size, char * _output)
 }
 
 inline void 
-putNumTo2bytesEndianessAware(const ui32 _num, char * _output)
+putUIntTo2Char(const ui32 _num, char * _output)
 {
   _output[0] = ( _num       & MASK);
   _output[1] = ((_num >> 8) & MASK);
 }
 
 inline void 
-putNumTo4bytesEndianessAware(const ui32 _num, char * _output)
+putUIntTo4Char(const ui32 _num, char * _output)
 {
   _output[0] = ( _num        & MASK);
   _output[1] = ((_num >>  8) & MASK);
@@ -79,7 +82,7 @@ putNumTo4bytesEndianessAware(const ui32 _num, char * _output)
 }
 
 inline void 
-putStringEndianessAware(const char * _string, const ui32 _size, char * _output)
+putStringOfVarSize(const char * _string, const ui32 _size, char * _output)
 {
   int i = 0;
   for (i = 0; i < _size; i++) {
@@ -88,7 +91,7 @@ putStringEndianessAware(const char * _string, const ui32 _size, char * _output)
 }
 
 inline void 
-putStringTo4bytesEndianessAware(const char * _string, char * _output)
+putStringTo4Char(const char * _string, char * _output)
 {
   _output[0] = _string[0];
   _output[1] = _string[1];
@@ -97,7 +100,7 @@ putStringTo4bytesEndianessAware(const char * _string, char * _output)
 }
 
 inline void 
-putStringTo2bytesEndianessAware(const char * _string, char * _output)
+putStringTo2Char(const char * _string, char * _output)
 {
   _output[0] = _string[0];
   _output[1] = _string[1];

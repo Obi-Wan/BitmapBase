@@ -81,6 +81,7 @@ typedef struct rel_coordinate {
 
 typedef uc8 padding;
 
-#define MASK 255
+#define MASK 0xff
+// same as 255
 
 #endif

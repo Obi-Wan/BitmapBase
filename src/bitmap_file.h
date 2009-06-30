@@ -9,7 +9,7 @@ public:
   BitmapFile(size _size);
   BitmapFile(size _size, pixel24 * _data);
 
-  char * printBMPFile(void);
+  char * emitBMPFile(void);
   bool readBMPFile(const ui32 _size, const char *); 
 
   ui32 getFileSize(void){
