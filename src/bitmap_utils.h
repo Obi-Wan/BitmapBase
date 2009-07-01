@@ -9,112 +9,118 @@
     #include <stdio.h>
 #endif
 
-typedef struct node_channel_coordinate {
-  struct coordinate coordinates;
 
-  uc8 value;
+class list_channel_coordinate {
+  
+  struct node_channel_coordinate {
+    struct coordinate coordinates;
 
-  node_channel_coordinate * next;
-  node_channel_coordinate * previous;
+    uc8 value;
 
-  node_channel_coordinate(const coordinate & coords, const uc8 & _value,
-                          node_channel_coordinate * _next,
-                          node_channel_coordinate * _previous)
-        : coordinates(coords), value(_value), next(_next),
-          previous(_previous) { }
-} node_channel_coordinate;
+    node_channel_coordinate * next;
+    node_channel_coordinate * previous;
 
-typedef struct ordered_list_channel_coordinate {
+    node_channel_coordinate(const coordinate & coords, const uc8 & _value,
+                            node_channel_coordinate * _next,
+                            node_channel_coordinate * _previous)
+          : coordinates(coords), value(_value), next(_next),
+            previous(_previous) { }
+  };
+  
   node_channel_coordinate * first;
   node_channel_coordinate * last;
 
   ui32 numElements;
 
-  ordered_list_channel_coordinate()
-            : first(NULL),last(NULL),numElements(0) { }
-} ordered_list_channel_coordinate;
-
-inline ordered_list_channel_coordinate *
-createOrderedListCC() {
-  return new ordered_list_channel_coordinate();
-}
-
-inline bool
-addElementOrderedListCC(ordered_list_channel_coordinate & list,
-                        const coordinate & coords, const uc8 & value) {
-  if (list.first == NULL) {
-    list.first = list.last = new node_channel_coordinate(coords,value,NULL,NULL);
-    list.numElements++;
-    return true;
-  } else if (list.last->value <= value) {
-    list.last->next = new node_channel_coordinate(coords,value,NULL,list.last);
-    list.last = list.last->next;
-    list.numElements++;
-    return true;
-  } else if (list.first->value >= value) {
-    list.first->previous = new node_channel_coordinate(coords,value,list.first,NULL);
-    list.first = list.first->previous;
-    list.numElements++;
-    return true;
+  list_channel_coordinate() : first(NULL),last(NULL),numElements(0) { }
+  
+public:
+  static list_channel_coordinate * createListCC() {
+    return new list_channel_coordinate();
   }
-  for(node_channel_coordinate * currentElement = list.first->next;
-      currentElement->next != NULL; currentElement = currentElement->next) {
-    if (currentElement->value >= value) {
-      node_channel_coordinate * previousElement = currentElement->previous;
-      node_channel_coordinate * newElement = new node_channel_coordinate(coords,value,
-                                                          currentElement,
-                                                          previousElement);
-      currentElement->previous = newElement;
-      if (previousElement) {
-        previousElement->next = newElement;
-      }
-      list.numElements++;
+
+  bool isEmptyListCC() const {
+    return (numElements == 0);
+  }
+
+  bool isSortedListCC() const {
+    for(const node_channel_coordinate * temp = first; temp; temp = temp->next) {
+      delete temp->previous;
+    }
+  }
+  
+  bool addSortedElementListCC(const coordinate & coords, const uc8 & value) {
+    if (first == NULL) {
+      first = last = new node_channel_coordinate(coords,value,NULL,NULL);
+      numElements++;
+      return true;
+    } else if (last->value <= value) {
+      last->next = new node_channel_coordinate(coords,value,NULL,last);
+      last = last->next;
+      numElements++;
+      return true;
+    } else if (first->value >= value) {
+      first->previous = new node_channel_coordinate(coords,value,first,NULL);
+      first = first->previous;
+      numElements++;
       return true;
     }
-  }
-  return false;
-};
-
-inline bool
-popMinElementOrderedListCC(ordered_list_channel_coordinate & list,
-                           coordinate & coords, uc8 & value) {
-  if (list.first != NULL) {
-#ifdef DEBUG
-    printf("primo nella lista: (%d,%d) val: %d , next: %s\n",
-           list.first->coordinates.x,list.first->coordinates.y,
-           list.first->value,list.first->next ? "si" : "no");
-#endif
-    coords = list.first->coordinates;
-    value = list.first->value;
-    node_channel_coordinate * tempNode = list.first;
-    list.first = tempNode->next;
-    if (list.first) {
-      list.first->previous = NULL;
-    } else {
-      list.last = list.first;
+    for(node_channel_coordinate * currentElement = first->next;
+        currentElement->next != NULL; currentElement = currentElement->next) {
+      if (currentElement->value >= value) {
+        node_channel_coordinate * previousElement = currentElement->previous;
+        node_channel_coordinate * newElement = new node_channel_coordinate(coords,value,
+                                                            currentElement,
+                                                            previousElement);
+        currentElement->previous = newElement;
+        if (previousElement) {
+          previousElement->next = newElement;
+        }
+        numElements++;
+        return true;
+      }
     }
-    delete tempNode;
-    list.numElements--;
-    return true;
-  } else {
     return false;
   }
-};
 
-inline void
-destroyOrderedListCC(ordered_list_channel_coordinate * list) {
-  for(node_channel_coordinate * temp = list->first->next; temp; temp = temp->next) {
-    delete temp->previous;
+  bool popMinElementSortedListCC(coordinate & coords, uc8 & value) {
+    if (first != NULL) {
+      coords = first->coordinates;
+      value = first->value;
+      node_channel_coordinate * tempNode = first;
+      first = tempNode->next;
+      if (first) {
+        first->previous = NULL;
+      } else {
+        last = first;
+      }
+      delete tempNode;
+      numElements--;
+      return true;
+    } else {
+      return false;
+    }
   }
-  delete list->last;
-  delete list;
-  list = NULL;
+  
+  void emptyList() { /* too tricky */
+    if ( first) {
+      if ( first->next) {
+        for(node_channel_coordinate * temp = first->next; temp; temp = temp->next) {
+          delete temp->previous;
+        }
+      }
+      delete last;
+    }
+    first = last = NULL;
+  }
+
+  ~list_channel_coordinate() {
+    emptyList();
+  }
+
+  const ui32 getNumElements() const { return numElements; }
 };
 
-inline bool
-isEmptyOrderedListCC(const ordered_list_channel_coordinate & list) {
-  return (list.numElements == 0);
-};
 
 //--------------------------
 

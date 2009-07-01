@@ -121,22 +121,22 @@ transformations::decolorify(size _size, pixel24 * matrix,
 void
 transformations::saturation(size _size, pixel24* matrix, uc8 threshold) {
   ui32 i = 0, j = 0;
-  ordered_list_channel_coordinate 
-          * listRed = createOrderedListCC(),
-          * listGreen = createOrderedListCC(), 
-          * listBlue = createOrderedListCC();
+  list_channel_coordinate
+          * listRed = list_channel_coordinate::createListCC(),
+          * listGreen = list_channel_coordinate::createListCC(),
+          * listBlue = list_channel_coordinate::createListCC();
   for (i = 0; i < _size.height; i++) { /* ciclo sulla y */
     for (j = 0; j < _size.width; j++) { /* ciclo sulla x */
       if ((matrix + i * _size.width + j)->red > threshold) {
-        addElementOrderedListCC(*listRed,coordinate(j,i),
+        listRed->addSortedElementListCC(coordinate(j,i),
                                 (matrix + i * _size.width + j)->red);
       }
       if ((matrix + i * _size.width + j)->green > threshold) {
-        addElementOrderedListCC(*listGreen,coordinate(j,i),
+        listGreen->addSortedElementListCC(coordinate(j,i),
                                 (matrix + i * _size.width + j)->green);
       }
       if ((matrix + i * _size.width + j)->blue > threshold) {
-        addElementOrderedListCC(*listBlue,coordinate(j,i),
+        listBlue->addSortedElementListCC(coordinate(j,i),
                                 (matrix + i * _size.width + j)->blue);
       }
     }
@@ -144,9 +144,13 @@ transformations::saturation(size _size, pixel24* matrix, uc8 threshold) {
 
 #ifdef DEBUG
   printf("scan iniziale finito. Elementi da processare:\n "
-          "rossi: %d , verdi: %d , blu: %d = totali: %d\n",listRed->numElements,
-         listGreen->numElements,listBlue->numElements,
-         listBlue->numElements + listGreen->numElements + listRed->numElements);
+          "rossi: %d , verdi: %d , blu: %d = totali: %d\n",
+         listRed->getNumElements(),
+         listGreen->getNumElements(),
+         listBlue->getNumElements(),
+           listBlue->getNumElements() + listGreen->getNumElements() +
+           listRed->getNumElements()
+         );
 #endif
 
   /* i vettori vanno ordinati in ordine crescente, per non processare in modo
@@ -170,7 +174,7 @@ transformations::saturation(size _size, pixel24* matrix, uc8 threshold) {
 inline void
 transformations::saturatelistOfPoints(const size& _size,
                                       pixel24* matrix,
-                                      ordered_list_channel_coordinate* list,
+                                      list_channel_coordinate* list,
                                       const ui32& color) {
   uc8 ref = 0;
   ui32 tempElabRef = 0;
@@ -178,9 +182,9 @@ transformations::saturatelistOfPoints(const size& _size,
   pixel24 * tempRefToPoint = NULL;
   rel_coordinate upperMaxCoords(0,0),lowerMaxCoords(0,0);
 
-  for (;!isEmptyOrderedListCC(*list);) {
+  for (;!list->isEmptyListCC();) {
 
-    popMinElementOrderedListCC(*list,coords,ref);
+    list->popMinElementSortedListCC(coords,ref);
 
     upperMaxCoords = rel_coordinate(max(-20,-coords.x),max(-20,-coords.y));
     lowerMaxCoords = rel_coordinate(min(20,_size.width  - coords.x),
