@@ -2,7 +2,10 @@
 #define BITMAP_UTILS_H
 
 #include "bitmap_types.h"
+#include <deque>
+//#include <algorithm>
 
+using namespace std;
 //#define DEBUG
 
 #ifdef DEBUG
@@ -17,22 +20,17 @@ class list_channel_coordinate {
 
     uc8 value;
 
-    node_channel_coordinate * next;
-    node_channel_coordinate * previous;
+    node_channel_coordinate(const coordinate & coords, const uc8 & _value)
+          : coordinates(coords), value(_value) { }
 
-    node_channel_coordinate(const coordinate & coords, const uc8 & _value,
-                            node_channel_coordinate * _next,
-                            node_channel_coordinate * _previous)
-          : coordinates(coords), value(_value), next(_next),
-            previous(_previous) { }
+    bool operator< (const node_channel_coordinate & node) {
+      return (value < node.value);
+    }
   };
-  
-  node_channel_coordinate * first;
-  node_channel_coordinate * last;
 
-  ui32 numElements;
+  deque<node_channel_coordinate> list;
 
-  list_channel_coordinate() : first(NULL),last(NULL),numElements(0) { }
+  list_channel_coordinate() {  }
   
 public:
   static list_channel_coordinate * createListCC() {
@@ -40,43 +38,33 @@ public:
   }
 
   bool isEmptyListCC() const {
-    return (numElements == 0);
+    return (list.size() == 0);
   }
 
   bool isSortedListCC() const {
-    for(const node_channel_coordinate * temp = first; temp; temp = temp->next) {
-      delete temp->previous;
+    for(ui32 i = 0; i < list.size();i++) {
+      if (list.at(i).value < list.at(i+1).value) {
+        return false;
+      }
     }
+    return true;
   }
   
   bool addSortedElementListCC(const coordinate & coords, const uc8 & value) {
-    if (first == NULL) {
-      first = last = new node_channel_coordinate(coords,value,NULL,NULL);
-      numElements++;
+    if (list.empty()) {
+      list.push_front(node_channel_coordinate(coords,value));
       return true;
-    } else if (last->value <= value) {
-      last->next = new node_channel_coordinate(coords,value,NULL,last);
-      last = last->next;
-      numElements++;
+    } else if (list.back().value <= value) {
+      list.push_back(node_channel_coordinate(coords,value));
       return true;
-    } else if (first->value >= value) {
-      first->previous = new node_channel_coordinate(coords,value,first,NULL);
-      first = first->previous;
-      numElements++;
+    } else if (list.front().value >= value) {
+      list.push_front(node_channel_coordinate(coords,value));
       return true;
     }
-    for(node_channel_coordinate * currentElement = first->next;
-        currentElement->next != NULL; currentElement = currentElement->next) {
-      if (currentElement->value >= value) {
-        node_channel_coordinate * previousElement = currentElement->previous;
-        node_channel_coordinate * newElement = new node_channel_coordinate(coords,value,
-                                                            currentElement,
-                                                            previousElement);
-        currentElement->previous = newElement;
-        if (previousElement) {
-          previousElement->next = newElement;
-        }
-        numElements++;
+    for(deque<node_channel_coordinate>::iterator iter = list.begin();
+            iter < list.end(); iter++) {
+      if (iter->value >= value) {
+        list.insert(iter,node_channel_coordinate(coords,value));
         return true;
       }
     }
@@ -84,41 +72,30 @@ public:
   }
 
   bool popMinElementSortedListCC(coordinate & coords, uc8 & value) {
-    if (first != NULL) {
-      coords = first->coordinates;
-      value = first->value;
-      node_channel_coordinate * tempNode = first;
-      first = tempNode->next;
-      if (first) {
-        first->previous = NULL;
-      } else {
-        last = first;
-      }
-      delete tempNode;
-      numElements--;
+    if (!list.empty()) {
+      const node_channel_coordinate & node = list.front();
+      coords = node.coordinates;
+      value = node.value;
+      list.pop_front();
       return true;
     } else {
       return false;
     }
   }
   
-  void emptyList() { /* too tricky */
-    if ( first) {
-      if ( first->next) {
-        for(node_channel_coordinate * temp = first->next; temp; temp = temp->next) {
-          delete temp->previous;
-        }
-      }
-      delete last;
-    }
-    first = last = NULL;
+  void emptyList() {
+    list.clear();
   }
 
   ~list_channel_coordinate() {
     emptyList();
   }
 
-  const ui32 getNumElements() const { return numElements; }
+  const ui32 getNumElements() const { return list.size(); }
+
+//  void sortList() {
+//    sort< deque<node_channel_coordinate> >(list);
+//  }
 };
 
 
