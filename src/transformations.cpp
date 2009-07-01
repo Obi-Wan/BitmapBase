@@ -168,7 +168,10 @@ transformations::saturation(size _size, pixel24* matrix, uc8 threshold) {
 #ifdef DEBUG
   printf("Processamento blu finito\n");
 #endif
-  
+
+  delete listRed;
+  delete listGreen;
+  delete listBlue;
 }
 
 inline void
