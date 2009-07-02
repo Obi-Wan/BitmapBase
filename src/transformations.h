@@ -23,7 +23,7 @@ public:
 private:
   inline static void saturatelistOfPoints(const size & _size,
                                    pixel24 * matrix,
-                                   list_channel_coordinate * list,
+                                   listChannelCoordinates & list,
                                    const ui32 & color);
 };
 

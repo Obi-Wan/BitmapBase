@@ -121,36 +121,41 @@ transformations::decolorify(size _size, pixel24 * matrix,
 void
 transformations::saturation(size _size, pixel24* matrix, uc8 threshold) {
   ui32 i = 0, j = 0;
-  list_channel_coordinate
-          * listRed = list_channel_coordinate::createListCC(),
-          * listGreen = list_channel_coordinate::createListCC(),
-          * listBlue = list_channel_coordinate::createListCC();
+  listChannelCoordinates listRed, listGreen, listBlue;
   for (i = 0; i < _size.height; i++) { /* ciclo sulla y */
     for (j = 0; j < _size.width; j++) { /* ciclo sulla x */
       if ((matrix + i * _size.width + j)->red > threshold) {
-        listRed->addSortedElementListCC(coordinate(j,i),
+        listRed.addUnsortedElement(coordinate(j,i),
                                 (matrix + i * _size.width + j)->red);
       }
       if ((matrix + i * _size.width + j)->green > threshold) {
-        listGreen->addSortedElementListCC(coordinate(j,i),
+        listGreen.addUnsortedElement(coordinate(j,i),
                                 (matrix + i * _size.width + j)->green);
       }
       if ((matrix + i * _size.width + j)->blue > threshold) {
-        listBlue->addSortedElementListCC(coordinate(j,i),
+        listBlue.addUnsortedElement(coordinate(j,i),
                                 (matrix + i * _size.width + j)->blue);
       }
     }
   }
 
 #ifdef DEBUG
-  printf("scan iniziale finito. Elementi da processare:\n "
+  printf("scan iniziale finito. Elementi da ordinare e processare:\n "
           "rossi: %d , verdi: %d , blu: %d = totali: %d\n",
-         listRed->getNumElements(),
-         listGreen->getNumElements(),
-         listBlue->getNumElements(),
-           listBlue->getNumElements() + listGreen->getNumElements() +
-           listRed->getNumElements()
+         listRed.getNumElements(),
+         listGreen.getNumElements(),
+         listBlue.getNumElements(),
+           listBlue.getNumElements() + listGreen.getNumElements() +
+           listRed.getNumElements()
          );
+#endif
+
+  listRed.sortList();
+  listGreen.sortList();
+  listBlue.sortList();
+
+#ifdef DEBUG
+  printf("Elementi ordinati\n");
 #endif
 
   /* i vettori vanno ordinati in ordine crescente, per non processare in modo
@@ -168,16 +173,12 @@ transformations::saturation(size _size, pixel24* matrix, uc8 threshold) {
 #ifdef DEBUG
   printf("Processamento blu finito\n");
 #endif
-
-  delete listRed;
-  delete listGreen;
-  delete listBlue;
 }
 
 inline void
 transformations::saturatelistOfPoints(const size& _size,
                                       pixel24* matrix,
-                                      list_channel_coordinate* list,
+                                      listChannelCoordinates & list,
                                       const ui32& color) {
   uc8 ref = 0;
   ui32 tempElabRef = 0;
@@ -185,9 +186,9 @@ transformations::saturatelistOfPoints(const size& _size,
   pixel24 * tempRefToPoint = NULL;
   rel_coordinate upperMaxCoords(0,0),lowerMaxCoords(0,0);
 
-  for (;!list->isEmptyListCC();) {
+  for (;!list.isEmpty();) {
 
-    list->popMinElementSortedListCC(coords,ref);
+    list.popMinElementSorted(coords,ref);
 
     upperMaxCoords = rel_coordinate(max(-20,-coords.x),max(-20,-coords.y));
     lowerMaxCoords = rel_coordinate(min(20,_size.width  - coords.x),
@@ -199,10 +200,6 @@ transformations::saturatelistOfPoints(const size& _size,
         tempRefToPoint = getPointerRelCoords(matrix,_size,coords,
                                              rel_coordinate(contX,contY));
         if (tempRefToPoint->getChannel(color) < ref) {
-#ifdef DEBUG
-       //   printf("il punto di coordinate (%d,%d) verrà aumentato\n",coords.x + contX,
-     //            coords.y + contY);
-#endif
           tempElabRef = tempRefToPoint->getChannel(color) +
                   ( (ref - tempRefToPoint->getChannel(color)) /
                     ( distanceQuad( rel_coordinate(contX,contY) ) ) );
@@ -210,11 +207,6 @@ transformations::saturatelistOfPoints(const size& _size,
         }
       }
     }
-#ifdef DEBUG
-//    printf("punto di coordinate (%d,%d) saturato con successo\n",coords.x,
-  //         coords.y);
-    //printf("ne rimangono: %d\n",list->numElements);
-#endif
   } /* Fine ciclo sugli elementi della lsita */
 }
 
