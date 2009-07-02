@@ -2,6 +2,7 @@
 #define BITMAP_FILE_H
 
 #include "bitmap.h"
+#include "transformations.h"
 
 class BitmapFile : protected BitmapBase {
 public:
@@ -16,7 +17,9 @@ public:
     return (HEADER_SIZE + getDataSize());
   } // in byte
 
-  void applyTransform() { BitmapBase::applyTransform(); } ;
+  void applyTransform(const Cfg & cfg) {
+    BitmapBase::applyTransform(cfg);
+  };
 };
 
 #endif

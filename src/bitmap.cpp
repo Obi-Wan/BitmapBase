@@ -1,3 +1,5 @@
+#include <stdlib.h>
+
 #include "bitmap.h"
 
 #ifdef DEBUG
@@ -87,17 +89,36 @@ BitmapBase::readDataMatrix24(const sc8 * _data) { /* I should control size */
 ////////////////////////////////////////////////////
 
 void
-BitmapBase::applyTransform() {
+BitmapBase::applyTransform(const Cfg & cfg) {
   
   size _size = {getWidth(),getHeight()};
+  ui32 threshold = atoi(cfg.getSubOption(THRESHOLD).c_str());
+  ui32 col = atoi(cfg.getSubOption(COLORS).c_str());
 
-  //transformations::sinAndGradient(_size,the_matrix);
-  //transformations::transpose(_size,the_matrix);
-  //transformations::inverseGradient(_size,the_matrix);
+  switch (cfg.getTrasform()) {
+    case GRADIENT:
+      Transformations::gradient(_size,getDataMatrix());
+      break;
+    case INVERSE_GRADIENT:
+      Transformations::inverseGradient(_size,getDataMatrix());
+      break;
+    case SIN_AND_GRADIENT:
+      Transformations::sinAndGradient(_size,getDataMatrix());
+      break;
+    case SIN_ALL_CHANNELS:
+      Transformations::sinAllChannels(_size,getDataMatrix());
+      break;
+    case TRANSPOSE:
+      Transformations::transpose(_size,getDataMatrix());
+      break;
+    case SATURATION:
+      //Transformations::saturation(_size,getDataMatrix(),192);
+      Transformations::saturation(_size,getDataMatrix(),threshold);
+      break;
+    case DECOLORIFY:
+      Transformations::decolorify(_size,getDataMatrix(),col);
+      break;
+  }
 
-  //transformations::transpose(_size,getDataMatrix());
-  //transformations::decolorify(_size,the_matrix,16);
 
-  Transformations::saturation(_size,getDataMatrix(),224);
-  //transformations::saturation(_size,getDataMatrix(),224);
 }

@@ -5,6 +5,8 @@
 #define PIXEL_SIZE 1	// meant in Byte
 
 #include "bitmap_types.h"
+#include "transformations.h"
+#include "ArgsHandling.h"
 
 // No data coherence granted.
 
@@ -40,7 +42,7 @@ public:
   		(getWidth() % 4) * getHeight();
   } // in byte
 
-  void applyTransform();
+  void applyTransform(const Cfg & cfg);
 };
 
 #endif

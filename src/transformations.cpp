@@ -8,7 +8,7 @@
 #define INFO
 
 #if defined( INFO ) || defined( DEBUG )
-    #include <stdio.h>
+    #include <cstdio>
 #endif
 
 void 

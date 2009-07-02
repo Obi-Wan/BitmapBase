@@ -9,6 +9,7 @@
 #define	_ARGSHANDLING_H
 
 #include "bitmap_types.h"
+#include "transformations.h"
 
 #include <map>
 #include <set>
@@ -16,6 +17,20 @@
 #include <string>
 
 using namespace std;
+
+#define FEATURE_INPUT   (1 << 0)
+#define FEATURE_OUTPUT  (1 << 1)
+
+//typedef pair< TransformType , ui32 > transformProps;
+
+struct transformProps {
+  TransformType type;
+  ui32 features;
+  string description;
+
+  transformProps(const TransformType & t, const ui32 & f, const string & d)
+          : type(t), features(f), description(d) {}
+};
 
 //struct OptionProps {
 //  ui16 numParams;
@@ -26,30 +41,51 @@ using namespace std;
 enum Args {
   INPUT,
   OUTPUT,
-  TRANSFORM
+  TRANSFORM,
+  HELP
 };
 
 const static char * argsStrings[] = {
   "-input",
   "-output",
-  "-transform"
+  "-transform",
+  "-help"
 };
 
-class ArgsHandling {
+enum SubArgs {
+  COLORS,
+  THRESHOLD
+};
+
+const static char * subArgsStrings[] = {
+  "-colors",
+  "-threshold"
+};
+
+class Cfg {
 
   bool dirty;
 
   map<string, string> options;
 
+  map<string, transformProps> trasformations;
+
 public:
-  ArgsHandling(si32 argc, char **argv);
-  virtual ~ArgsHandling();
+  Cfg(si32 argc, char **argv);
+  virtual ~Cfg();
 
   const bool isDirty() const { return dirty; }
 
   const string & getOption(const ui32 & op) const {
     return options.at(argsStrings[op]);
   }
+  const string & getSubOption(const ui32 & op) const {
+    return options.at(subArgsStrings[op]);
+  }
+
+  const ui32 getFeatures() const;
+  const TransformType getTrasform() const;
+  void printHelp() const;
 };
 
 #endif	/* _ARGSHANDLING_H */
