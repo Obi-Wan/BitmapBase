@@ -4,7 +4,27 @@
 #include "bitmap_types.h"
 #include "bitmap_utils.h"
 
-class transformations {
+enum TransformType {
+  GRADIENT,
+  INVERSE_GRADIENT,
+  SIN_AND_GRADIENT,
+  SIN_ALL_CHANNELS,
+  TRANSPOSE,
+  SATURATION,
+  DECOLORIFY
+};
+
+const static char * transfomNames[] = {
+  "grad",
+  "inv_grad",
+  "sin_grad",
+  "sin",
+  "transp",
+  "satur",
+  "decolor"
+};
+
+class Transformations {
 public:
   static void gradient(const size _size, pixel24 * matrix);
   static void inverseGradient(const size _size, pixel24 * matrix);

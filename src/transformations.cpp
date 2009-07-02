@@ -5,14 +5,14 @@
 #include <cmath>
 #define PI 3.14159265
 
-#define DEBUG
+#define INFO
 
-#ifdef DEBUG
+#if defined( INFO ) || defined( DEBUG )
     #include <stdio.h>
 #endif
 
 void 
-transformations::gradient(size _size, pixel24 * matrix) {
+Transformations::gradient(size _size, pixel24 * matrix) {
   ui32 i = 0, j = 0;
   for(i = 0; i < _size.height; i++) {
     for(j = 0; j < _size.width; j++) {
@@ -24,7 +24,7 @@ transformations::gradient(size _size, pixel24 * matrix) {
 }
 
 void 
-transformations::inverseGradient(size _size, pixel24 * matrix) {
+Transformations::inverseGradient(size _size, pixel24 * matrix) {
   ui32 i = 0, j = 0;
   for(i = 0; i < _size.height; i++) {
     for(j = 0; j < _size.width; j++) {
@@ -39,7 +39,7 @@ transformations::inverseGradient(size _size, pixel24 * matrix) {
 }
 
 void 
-transformations::sinAllChannels(size _size, pixel24 * matrix) {
+Transformations::sinAllChannels(size _size, pixel24 * matrix) {
   ui32 i = 0, j = 0;
   for(i = 0; i < _size.height; i++) {
     for(j = 0; j < _size.width; j++) {
@@ -56,7 +56,7 @@ transformations::sinAllChannels(size _size, pixel24 * matrix) {
 
 
 void 
-transformations::sinAndGradient(size _size,pixel24 * matrix) {
+Transformations::sinAndGradient(size _size,pixel24 * matrix) {
   ui32 i = 0, j = 0;
   for(i = 0; i < _size.height; i++) {
     for(j = 0; j < _size.width; j++) {
@@ -72,7 +72,7 @@ transformations::sinAndGradient(size _size,pixel24 * matrix) {
 }
 
 void
-transformations::transpose(size _size, pixel24 * matrix) {
+Transformations::transpose(size _size, pixel24 * matrix) {
   ui32 i = 0, j = 0;
   uc8 temp = 0;
   for (i = 0; i < _size.height; i++) {
@@ -91,7 +91,7 @@ transformations::transpose(size _size, pixel24 * matrix) {
 }
 
 void
-transformations::decolorify(size _size, pixel24 * matrix,
+Transformations::decolorify(size _size, pixel24 * matrix,
                             const ui32 num)
 {
   ui32 i = 0, j = 0;
@@ -119,9 +119,13 @@ transformations::decolorify(size _size, pixel24 * matrix,
  * 240/256 = 93.75  %
  */
 void
-transformations::saturation(size _size, pixel24* matrix, uc8 threshold) {
+Transformations::saturation(size _size, pixel24* matrix, uc8 threshold) {
   ui32 i = 0, j = 0;
   listChannelCoordinates listRed, listGreen, listBlue;
+
+#ifdef INFO
+  printf("Scan iniziale... ");
+#endif
   for (i = 0; i < _size.height; i++) { /* ciclo sulla y */
     for (j = 0; j < _size.width; j++) { /* ciclo sulla x */
       if ((matrix + i * _size.width + j)->red > threshold) {
@@ -139,9 +143,9 @@ transformations::saturation(size _size, pixel24* matrix, uc8 threshold) {
     }
   }
 
-#ifdef DEBUG
-  printf("scan iniziale finito. Elementi da ordinare e processare:\n "
-          "rossi: %d , verdi: %d , blu: %d = totali: %d\n",
+#ifdef INFO
+  printf("finito!\nElementi da ordinare e processare:\n "
+          "rossi: %d , verdi: %d , blu: %d = totali: %d\nOrdinamento... ",
          listRed.getNumElements(),
          listGreen.getNumElements(),
          listBlue.getNumElements(),
@@ -154,29 +158,32 @@ transformations::saturation(size _size, pixel24* matrix, uc8 threshold) {
   listGreen.sortList();
   listBlue.sortList();
 
-#ifdef DEBUG
-  printf("Elementi ordinati\n");
+#ifdef INFO
+  printf("ordinati!\n");
 #endif
 
   /* i vettori sono stati ordinati in ordine crescente, per non processare in
    * condizioni diverse i vari punti */
 
+#ifdef INFO
+  printf("Processamento rossi... ");
+#endif
   saturatelistOfPoints(_size,matrix,listRed,COLOR_RED);
-#ifdef DEBUG
-  printf("Processamento rossi finito\n");
+#ifdef INFO
+  printf("finito!\nProcessamento verdi... ");
 #endif
   saturatelistOfPoints(_size,matrix,listGreen,COLOR_GREEN);
-#ifdef DEBUG
-  printf("Processamento verdi finito\n");
+#ifdef INFO
+  printf("finito!\nProcessamento blu... ");
 #endif
   saturatelistOfPoints(_size,matrix,listBlue,COLOR_BLUE);
-#ifdef DEBUG
-  printf("Processamento blu finito\n");
+#ifdef INFO
+  printf("finito!\n");
 #endif
 }
 
 inline void
-transformations::saturatelistOfPoints(const size& _size,
+Transformations::saturatelistOfPoints(const size& _size,
                                       pixel24* matrix,
                                       listChannelCoordinates & list,
                                       const ui32& color) {
@@ -210,4 +217,4 @@ transformations::saturatelistOfPoints(const size& _size,
   } /* Fine ciclo sugli elementi della lsita */
 }
 
-#undef DEBUG
+#undef INFO

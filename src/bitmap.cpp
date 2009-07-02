@@ -98,6 +98,6 @@ BitmapBase::applyTransform() {
   //transformations::transpose(_size,getDataMatrix());
   //transformations::decolorify(_size,the_matrix,16);
 
-  transformations::saturation(_size,getDataMatrix(),224);
+  Transformations::saturation(_size,getDataMatrix(),224);
   //transformations::saturation(_size,getDataMatrix(),224);
 }
