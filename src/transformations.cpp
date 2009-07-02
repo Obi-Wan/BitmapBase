@@ -158,8 +158,8 @@ transformations::saturation(size _size, pixel24* matrix, uc8 threshold) {
   printf("Elementi ordinati\n");
 #endif
 
-  /* i vettori vanno ordinati in ordine crescente, per non processare in modo
-   * diverso i vari punti */
+  /* i vettori sono stati ordinati in ordine crescente, per non processare in
+   * condizioni diverse i vari punti */
 
   saturatelistOfPoints(_size,matrix,listRed,COLOR_RED);
 #ifdef DEBUG
