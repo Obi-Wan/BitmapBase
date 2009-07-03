@@ -69,18 +69,19 @@ Cfg::Cfg(si32 argc, char **argv) : dirty(false) {
       } else if (++cont < argc) {
         options[op] = string(argv[cont]);
       } else {
-        printf("Malformed option\n");
+        printf("Malformed option: %s\n",argv[--cont]);
         dirty = true;
       }
     } else {
-      printf("Unexisting option\n");
+      printf("Unexisting option: %s\n",argv[cont]);
       dirty = true;
     }
   }
 
   if (trasformations.find( options.find(string(argsStrings[TRANSFORM]))->second)
           == trasformations.end()) {
-    printf("Malformed option\n");
+    printf("Malformed transform option: %s\n",
+           options.find(string(argsStrings[TRANSFORM]))->second.c_str());
     dirty = true;
   }
 }
