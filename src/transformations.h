@@ -11,7 +11,8 @@ enum TransformType {
   SIN_ALL_CHANNELS,
   TRANSPOSE,
   SATURATION,
-  DECOLORIFY
+  DECOLORIFY,
+  SIN_VERT_WAVE
 };
 
 const static char * transfomNames[] = {
@@ -21,19 +22,22 @@ const static char * transfomNames[] = {
   "sin",
   "transp",
   "satur",
-  "decolor"
+  "decolor",
+  "sin_vert_wave"
 };
 
 class Transformations {
 public:
-  static void gradient(const size _size, pixel24 * matrix);
-  static void inverseGradient(const size _size, pixel24 * matrix);
-  static void sinAndGradient(const size _size, pixel24 * matrix);
-  static void sinAllChannels(const size _size, pixel24 * matrix);
-  static void transpose(size _size, pixel24 * matrix);
+  static void gradient(const size & _size, pixel24 * matrix);
+  static void inverseGradient(const size & _size, pixel24 * matrix);
+  static void sinAndGradient(const size & _size, pixel24 * matrix);
+  static void sinAllChannels(const size & _size, pixel24 * matrix);
 
-  static void saturation(const size _size, pixel24 * matrix, uc8 threshold);
-  static void decolorify(const size _size, pixel24 * matrix, const ui32 num);
+  static void transpose(size & _size, pixel24 * matrix);
+  static void sin_vert_wave(const size & _size, pixel24 * matrix);
+
+  static void saturation(const size & _size, pixel24 * matrix, uc8 threshold);
+  static void decolorify(const size & _size, pixel24 * matrix, const ui32 num);
 
   /* Maybe in future */
 //  static void classicaAdjoint(struct size _size, struct pixel24 * matrix);

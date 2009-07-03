@@ -23,40 +23,45 @@ Cfg::Cfg(si32 argc, char **argv) : dirty(false) {
   options.insert(option(subArgsStrings[THRESHOLD],"224"));
 
   trasformations.insert(
-      feature("grad",
+      feature(transfomNames[GRADIENT],
               transformProps(GRADIENT,
                              FEATURE_OUTPUT,
-                             string(""))));
+                             "")));
   trasformations.insert(
-      feature("inv_grad",
+      feature(transfomNames[INVERSE_GRADIENT],
               transformProps(INVERSE_GRADIENT,
                              FEATURE_OUTPUT,
-                             string(""))));
+                             "")));
   trasformations.insert(
-      feature("sin_grad",
+      feature(transfomNames[SIN_AND_GRADIENT],
               transformProps(SIN_AND_GRADIENT,
                              FEATURE_OUTPUT,
-                             string(""))));
+                             "")));
   trasformations.insert(
-      feature("sin",
+      feature(transfomNames[SIN_ALL_CHANNELS],
               transformProps(SIN_ALL_CHANNELS,
                              FEATURE_OUTPUT,
-                             string("Outputs a sinusoidal theme"))));
+                             "Outputs a sinusoidal theme")));
   trasformations.insert(
-      feature("trasp",
+      feature(transfomNames[TRANSPOSE],
               transformProps(TRANSPOSE,
                              FEATURE_OUTPUT | FEATURE_INPUT,
-                             string("Trasposes the matrix"))));
+                             "Trasposes the matrix")));
   trasformations.insert(
-      feature("satur",
+      feature(transfomNames[SATURATION],
               transformProps(SATURATION,
                              FEATURE_OUTPUT | FEATURE_INPUT,
-                             string("Saturates"))));
+                             "Saturates")));
   trasformations.insert(
-      feature("decolor",
+      feature(transfomNames[DECOLORIFY],
               transformProps(DECOLORIFY,
                              FEATURE_OUTPUT | FEATURE_INPUT,
-                             string("Decreases the number of colors"))));
+                             "Decreases the number of colors")));
+  trasformations.insert(
+      feature(transfomNames[SIN_VERT_WAVE],
+              transformProps(SIN_VERT_WAVE,
+                             FEATURE_OUTPUT | FEATURE_INPUT,
+                             "Makes the pixel waving")));
 
   map<string,string>::iterator iterOption;
   string op;

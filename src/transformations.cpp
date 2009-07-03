@@ -3,6 +3,7 @@
 #include "bitmap_utils.h"
 #include "bitmap_funcs.h"
 #include <cmath>
+#include <valarray>
 #define PI 3.14159265
 
 #define INFO
@@ -12,7 +13,7 @@
 #endif
 
 void 
-Transformations::gradient(size _size, pixel24 * matrix) {
+Transformations::gradient(const size & _size, pixel24 * matrix) {
   ui32 i = 0, j = 0;
   for(i = 0; i < _size.height; i++) {
     for(j = 0; j < _size.width; j++) {
@@ -24,7 +25,7 @@ Transformations::gradient(size _size, pixel24 * matrix) {
 }
 
 void 
-Transformations::inverseGradient(size _size, pixel24 * matrix) {
+Transformations::inverseGradient(const size & _size, pixel24 * matrix) {
   ui32 i = 0, j = 0;
   for(i = 0; i < _size.height; i++) {
     for(j = 0; j < _size.width; j++) {
@@ -39,7 +40,7 @@ Transformations::inverseGradient(size _size, pixel24 * matrix) {
 }
 
 void 
-Transformations::sinAllChannels(size _size, pixel24 * matrix) {
+Transformations::sinAllChannels(const size & _size, pixel24 * matrix) {
   ui32 i = 0, j = 0;
   for(i = 0; i < _size.height; i++) {
     for(j = 0; j < _size.width; j++) {
@@ -56,7 +57,7 @@ Transformations::sinAllChannels(size _size, pixel24 * matrix) {
 
 
 void 
-Transformations::sinAndGradient(size _size,pixel24 * matrix) {
+Transformations::sinAndGradient(const size & _size,pixel24 * matrix) {
   ui32 i = 0, j = 0;
   for(i = 0; i < _size.height; i++) {
     for(j = 0; j < _size.width; j++) {
@@ -72,7 +73,10 @@ Transformations::sinAndGradient(size _size,pixel24 * matrix) {
 }
 
 void
-Transformations::transpose(size _size, pixel24 * matrix) {
+Transformations::transpose(size & _size, pixel24 * matrix) {
+#ifdef INFO
+  printf("Algoritmo di trasposizione.\nProcesso l'immagine... ");
+#endif
   ui32 i = 0, j = 0;
   uc8 temp = 0;
   for (i = 0; i < _size.height; i++) {
@@ -88,12 +92,19 @@ Transformations::transpose(size _size, pixel24 * matrix) {
       (matrix + j * _size.width + i)->blue = temp;
     }
   }
+#ifdef INFO
+  printf("finito.\n");
+#endif
 }
 
 void
-Transformations::decolorify(size _size, pixel24 * matrix,
+Transformations::decolorify(const size & _size, pixel24 * matrix,
                             const ui32 num)
 {
+#ifdef INFO
+  printf("Algoritmo di decolorazione.\nNumero nuovi colori: %d\n"
+          "Processo l'immagine... ",num);
+#endif
   ui32 i = 0, j = 0;
   const ui32 baseStep = 255 / num;
   uc8 temp = 0;
@@ -107,6 +118,9 @@ Transformations::decolorify(size _size, pixel24 * matrix,
       (matrix + i * _size.width + j)->blue = temp - ( temp % baseStep);
     }
   }
+#ifdef INFO
+  printf("finito.\n");
+#endif
 }
 
 /** This method saturates point near already-saturated points.
@@ -119,12 +133,12 @@ Transformations::decolorify(size _size, pixel24 * matrix,
  * 240/256 = 93.75  %
  */
 void
-Transformations::saturation(size _size, pixel24* matrix, uc8 threshold) {
+Transformations::saturation(const size & _size, pixel24* matrix, uc8 threshold) {
   ui32 i = 0, j = 0;
   listChannelCoordinates listRed, listGreen, listBlue;
 
 #ifdef INFO
-  printf("Scan iniziale... ");
+  printf("Algoritmo di saturazione.\nScan iniziale... ");
 #endif
   for (i = 0; i < _size.height; i++) { /* ciclo sulla y */
     for (j = 0; j < _size.width; j++) { /* ciclo sulla x */
@@ -215,6 +229,36 @@ Transformations::saturatelistOfPoints(const size& _size,
       }
     }
   } /* Fine ciclo sugli elementi della lsita */
+}
+
+void
+Transformations::sin_vert_wave(const size& _size, pixel24* matrix) {
+  // calibrating:
+#ifdef INFO
+  printf("Algoritmo di ondulatura.\nCalibrazione... ");
+#endif
+  const ui32 ampiezza = _size.width / 5;
+  const double omega = (2*PI) / _size.height;
+  si32 scostamento = 0;
+  valarray<pixel24> singolaRiga(_size.width);
+#ifdef INFO
+  printf("fatto.\n Pulsazione: %e \t Ampiezza: %d\n"
+          "Comincio con il processamento dell'immagine...",
+         omega,ampiezza);
+#endif
+  for (ui32 i = 0; i < _size.height; i++) {
+    scostamento = ampiezza * sin(omega * i);
+    for (ui32 j = 0; j < _size.width; j++) {
+      singolaRiga[j] = *getPointerAbsCoords(matrix,_size,coordinate(j,i));
+    }
+    singolaRiga = singolaRiga.cshift(scostamento);
+    for (ui32 j = 0; j < _size.width; j++) {
+      *getPointerAbsCoords(matrix,_size,coordinate(j,i)) = singolaRiga[j];
+    }
+  }
+#ifdef INFO
+  printf("fatto.\n");
+#endif
 }
 
 #undef INFO

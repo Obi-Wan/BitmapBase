@@ -118,6 +118,9 @@ BitmapBase::applyTransform(const Cfg & cfg) {
     case DECOLORIFY:
       Transformations::decolorify(_size,getDataMatrix(),col);
       break;
+    case SIN_VERT_WAVE:
+      Transformations::sin_vert_wave(_size,getDataMatrix());
+      break;
   }
 
 
