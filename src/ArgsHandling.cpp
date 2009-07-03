@@ -93,6 +93,7 @@ Cfg::Cfg(si32 argc, char **argv) : dirty(false) {
 
 Cfg::~Cfg() {
   options.clear();
+  trasformations.clear();
 }
 
 const ui32
